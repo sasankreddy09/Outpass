@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Outpass Management System</title>
+    <!-- Import Poppins Font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for Maintainability */
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --background-gradient: linear-gradient(135deg, #20002c, #6f00ff);
+            --glass-background: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: white;
+            --error-color: #ff6b6b;
+            --shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            --glow-animation: glow 1.5s infinite alternate;
+        }
+
+        /* Background Animation */
+        @keyframes moveBackground {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+
+        /* Glowing Animation */
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color); }
+            50% { box-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--primary-color); }
+            100% { box-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color); }
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* Base Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif; /* Stylish font */
+            background: var(--background-gradient);
+            background-size: 200% 200%;
+            animation: moveBackground 10s ease infinite;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600; /* Semi-bold */
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-family: 'Poppins', sans-serif; /* Consistent font */
+            font-weight: 500; /* Medium */
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: rgba(44, 62, 80, 0.8); /* Semi-transparent dark background */
+            color: var(--text-color);
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+            font-size: 20px;
+            text-align: center;
+            font-weight: 600; /* Semi-bold */
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500; /* Medium */
+            background: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar ul li a::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 70%);
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.5s ease-in-out;
+            border-radius: 50%;
+        }
+
+        .sidebar ul li a:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .sidebar ul li a:hover {
+            background: var(--secondary-color);
+            transform: scale(1.05);
+            box-shadow: var(--glow-animation);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background: var(--glass-background);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin: 20px;
+            box-shadow: var(--shadow);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .main-content h2 {
+            margin-top: 0;
+            color: var(--text-color);
+            font-weight: 600; /* Semi-bold */
+        }
+
+        /* Form Styles */
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: var(--glass-background);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid var(--glass-border);
+            border-radius: 5px;
+            background: var(--glass-background);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif; /* Consistent font */
+        }
+
+        .form-container input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-container input:hover, .form-container input:focus {
+            border-color: var(--primary-color);
+            box-shadow: var(--glow-animation);
+        }
+
+        .form-container button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif; /* Consistent font */
+            font-weight: 500; /* Medium */
+        }
+
+        .form-container button:hover {
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            transform: scale(1.05);
+            box-shadow: var(--glow-animation);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .main-content {
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>RGUKT Outpass Management System</h1>
+        <button class="logout-btn" onclick="logout()">🚪 Logout</button> <!-- Added emoji -->
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Dashboard</h2>
+            <ul>
+                <li><a href="#" onclick="loadPage('add-warden')">Add Warden</a></li>
+                <li><a href="#" onclick="loadPage('remove-warden')">Remove Warden</a></li>
+                <li><a href="#" onclick="loadPage('add-security')">Add Security</a></li>
+                <li><a href="#" onclick="loadPage('remove-security')">Remove Security</a></li>
+                <li><a href="#" onclick="loadPage('admin-settings')">Admin Settings</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <h2>Welcome to Admin Portal</h2>
+            <p>Select an option from the sidebar to manage the system.</p>
+        </div>
+    </div>
+
+    <script>
+        // Function to load pages dynamically
+        function loadPage(page) {
+            const mainContent = document.getElementById('main-content');
+            let content = '';
+
+            switch (page) {
+                case 'add-warden':
+                    content = `
+                        <h2>Add Warden</h2>
+                        <div class="form-container">
+                            <input type="text" placeholder="Enter Warden Username" id="warden-username">
+                            <input type="password" placeholder="Enter Warden Password" id="warden-password">
+                            <button onclick="addUser('warden')">Add Warden</button>
+                        </div>
+                    `;
+                    break;
+                case 'remove-warden':
+                    content = `
+                        <h2>Remove Warden</h2>
+                        <div class="form-container">
+                            <input type="text" placeholder="Enter Warden Username" id="remove-warden-username">
+                            <button onclick="removeUser('warden')">Remove Warden</button>
+                        </div>
+                    `;
+                    break;
+                case 'add-security':
+                    content = `
+                        <h2>Add Security</h2>
+                        <div class="form-container">
+                            <input type="text" placeholder="Enter Security Username" id="security-username">
+                            <input type="password" placeholder="Enter Security Password" id="security-password">
+                            <button onclick="addUser('security')">Add Security</button>
+                        </div>
+                    `;
+                    break;
+                case 'remove-security':
+                    content = `
+                        <h2>Remove Security</h2>
+                        <div class="form-container">
+                            <input type="text" placeholder="Enter Security Username" id="remove-security-username">
+                            <button onclick="removeUser('security')">Remove Security</button>
+                        </div>
+                    `;
+                    break;
+                case 'admin-settings':
+                    content = `
+                        <h2>Admin Settings</h2>
+                        <div class="form-container">
+                            <input type="text" placeholder="Current Username" id="current-username">
+                            <input type="password" placeholder="Current Password" id="current-password">
+                            <input type="text" placeholder="New Username" id="new-username">
+                            <input type="password" placeholder="New Password" id="new-password">
+                            <button onclick="updateAdminSettings()">Update Settings</button>
+                        </div>
+                    `;
+                    break;
+                default:
+                    content = `<h2>Welcome to Admin Portal</h2><p>Select an option from the sidebar to manage the system.</p>`;
+            }
+
+            mainContent.innerHTML = content;
+        }
+
+        // Function to add a user
+        function addUser(role) {
+            const username = document.getElementById(`${role}-username`).value;
+            const password = document.getElementById(`${role}-password`).value;
+
+            if (!username || !password) {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            users.push({ username, password, role });
+            localStorage.setItem('users', JSON.stringify(users));
+
+            alert(`${role.charAt(0).toUpperCase() + role.slice(1)} added successfully!`);
+        }
+
+        // Function to remove a user
+        function removeUser(role) {
+            const username = document.getElementById(`remove-${role}-username`).value;
+
+            if (!username) {
+                alert('Please enter a username.');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            users = users.filter(u => u.username !== username || u.role !== role);
+            localStorage.setItem('users', JSON.stringify(users));
+
+            alert(`${role.charAt(0).toUpperCase() + role.slice(1)} removed successfully!`);
+        }
+
+        // Function to update admin settings
+        function updateAdminSettings() {
+            const currentUsername = document.getElementById('current-username').value;
+            const currentPassword = document.getElementById('current-password').value;
+            const newUsername = document.getElementById('new-username').value;
+            const newPassword = document.getElementById('new-password').value;
+
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            const admin = users.find(u => u.role === 'admin');
+
+            if (admin && admin.username === currentUsername && admin.password === currentPassword) {
+                admin.username = newUsername;
+                admin.password = newPassword;
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('Admin settings updated successfully!');
+            } else {
+                alert('Invalid current username or password.');
+            }
+        }
+
+        // Logout Functionality
+        function logout() {
+            // Prevent back button navigation
+            window.location.replace('login.html');
+            window.history.pushState(null, '', 'login.html');
+        }
+        // Initialize default admin user if it doesn't exist
+        function initializeAdmin() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const adminExists = users.some(u => u.role === 'admin');
+
+            if (!adminExists) {
+                // Add a default admin user
+                const defaultAdmin = {
+                    username: 'admin', // Default username
+                    password: 'admin123', // Default password
+                    role: 'admin'
+                };
+                users.push(defaultAdmin);
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('Default admin user created. Username: admin, Password: admin123');
+            }
+        }
+
+        // Call the function to initialize admin when the page loads
+        initializeAdmin();
+    </script>
+    
+</body>
+</html>
