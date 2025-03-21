@@ -143,5 +143,14 @@ app.post("/security/outpasses/:id/check-in", async (req, res) => {
 app.get("/security",(req,res)=>{
     res.render("security");
 })
+app.get("/admin",(req,res)=>{
+    res.render("admin");
+})
+app.get("/login",(req,res)=>{
+    res.render("login");
+})
+app.get("/logout",(req,res)=>{
+    res.send("First Login Then we talk about logout")
+})
 // Start Server
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
