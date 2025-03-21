@@ -43,7 +43,7 @@
                 box-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color);
             }
         }
-
+        
         /* Floating Animation */
         @keyframes float {
             0% {
@@ -275,10 +275,21 @@
     </div>
 
     <script>
+const outdata = async () => {
+    const response = await fetch("/warden/data");
+    const data = await response.json();
+    return data;
+};
+let outing;
+// Wrap in an async function
+async function fetchData() {
+    outing = await outdata();
+    console.log(outing); // Logs the outpass data in the console
+}
+// Call the function
+fetchData();
+
         // Data Storage
-        let outpassData = JSON.parse(localStorage.getItem('outpassData')) || [];
-        let students = JSON.parse(localStorage.getItem('students')) || [];
-        let securityData = JSON.parse(localStorage.getItem('securityData')) || [];
 
         // Function to load pages dynamically
         function loadPage(page) {
@@ -315,7 +326,8 @@
 <input type="text" name="causeOfOutpass" id="causeOfOutpass" required>
 
 <label>Phone Number:</label> 
-<input type="text" name="phoneNumber" id="phoneNumber" required>
+<input type="text" pattern="[0-9]*" name="phoneNumber" inputmode="numeric">
+
 
 <label>Going Place:</label> 
 <input type="text" name="goingPlace" id="goingPlace" required>
@@ -333,34 +345,38 @@
                     `;
                     break;
                 case 'today-status':
-                    const today = new Date().toISOString().split('T')[0];
-                    const todayData = outpassData.filter(op => op.date === today);
                     content = `
-                        <h2>Today's Outpass Status</h2>
-                        <table>
-                            <thead>
+                <h2>Today's Outpass List</h2>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Branch</th>
+                            <th>Expected Out-time</th>
+                            <th>Expected In-time</th>
+                            <th>Cause</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${
+                            outing.todayOutpasses.length > 0
+                            ? outing.todayOutpasses.map(op => `
                                 <tr>
-                                    <th>Student ID</th>
-                                    <th>Name</th>
-                                    <th>Branch</th>
-                                    <th>Expected Check-in</th>
-                                    <th>Cause</th>
-                                    <th>Status</th>
+                                    <td>${op.idNo}</td>
+                                    <td>${op.name}</td>
+                                    <td>${op.branch}</td>
+                                    <td>${new Date(op.expectedOutTime).toLocaleString()}</td>
+                                    <td>${new Date(op.expectedInTime).toLocaleString()}</td>
+                                    <td>${op.causeOfOutpass}</td>
+                                    <td>${op.actualOutTime ? "Approved" : "Pending"}</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                ${todayData.map(op => `
-                                    <tr>
-                                        <td>${op.studentId}</td>
-                                        <td>${op.studentName}</td>
-                                        <td>${op.branch}</td>
-                                        <td>${op.expectedCheckin}</td>
-                                        <td>${op.cause}</td>
-                                        <td>${op.status || 'Pending'}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
+                            `).join("")
+                            : `<tr><td colspan="7" style="text-align:center;">No Outpasses Today</td></tr>`
+                        }
+                    </tbody>
+                </table>
                     `;
                     break;
                 case 'past-data':
@@ -371,7 +387,8 @@
                     `;
                     break;
                 case 'pending-students':
-                    const pendingStudents = outpassData.filter(op => op.status === 'Pending' && new Date(op.expectedCheckin) < new Date());
+                    console.log(outing)
+                    const pendingStudents = outing.todayOutpasses.filter(op => new Date(op.expectedInTime) < new Date());
                     content = `
                         <h2>Pending Students</h2>
                         <table>
@@ -386,10 +403,10 @@
                             <tbody>
                                 ${pendingStudents.map(op => `
                                     <tr>
-                                        <td>${op.studentId}</td>
-                                        <td>${op.studentName}</td>
+                                        <td>${op.idNo}</td>
+                                        <td>${op.name}</td>
                                         <td>${op.branch}</td>
-                                        <td>${op.phone}</td>
+                                        <td>${op.phoneNumber}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
@@ -478,8 +495,8 @@
         // Function to load past data
         function loadPastData() {
             const date = document.getElementById('past-date').value;
-            const pastData = outpassData.filter(op => op.date === date);
-
+            const pastData = outing.todayOutpasses.filter(op => new Date(op.expectedOutTime).toISOString().split('T')[0] === date);
+            console.log(pastData)
             const result = document.getElementById('past-data-result');
             result.innerHTML = `
                 <table>
@@ -495,11 +512,11 @@
                     <tbody>
                         ${pastData.map(op => `
                             <tr>
-                                <td>${op.studentId}</td>
-                                <td>${op.studentName}</td>
+                                <td>${op.idNo}</td>
+                                <td>${op.name}</td>
                                 <td>${op.branch}</td>
-                                <td>${op.expectedCheckin}</td>
-                                <td>${op.cause}</td>
+                                <td>${new Date(op.expectedInTime).toISOString().split('T')[0]}</td>
+                                <td>${op.causeOfOutpass}</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -510,10 +527,9 @@
         // Function to search student
         function searchStudent() {
             const studentId = document.getElementById('search-id').value;
-            const student = students.find(s => s.id === studentId);
-            const outpasses = outpassData.filter(op => op.studentId === studentId);
-
+            const student = outing.students.filter(op => op.idNo === studentId);
             const result = document.getElementById('search-result');
+            console.log(student);
             if (!student) {
                 result.innerHTML = `<p style="color: red;">Student not found.</p>`;
                 return;
@@ -521,29 +537,14 @@
 
             result.innerHTML = `
                 <h3>Student Details</h3>
-                <p><strong>ID:</strong> ${student.id}</p>
-                <p><strong>Name:</strong> ${student.name}</p>
-                <p><strong>Year:</strong> ${student.year}</p>
-                <p><strong>Branch:</strong> ${student.branch}</p>
-                <p><strong>Remaining Outpasses:</strong> ${student.outpassCount}</p>
+                <p><strong>ID:</strong> ${student[0].idNo}</p>
+                <p><strong>Name:</strong> ${student[0].name}</p>
+                <p><strong>Year:</strong> ${student[0].year}</p>
+                <p><strong>Branch:</strong> ${student[0].branch}</p>
+                <p><strong>Remaining Outpasses:</strong> ${student[0].totalOutpassesAllowed-student[0].outpassesUsed}</p>
                 <h3>Outpass History</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Cause</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${outpasses.map(op => `
-                            <tr>
-                                <td>${op.date}</td>
-                                <td>${op.cause}</td>
-                                <td>${op.status}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
+               
+          
                 </table>
             `;
         }

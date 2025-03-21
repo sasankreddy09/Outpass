@@ -29,27 +29,29 @@ app.set("view engine", "ejs");
 })();
 
 // Routes
-app.get("/warden", async (req, res) => {
+app.get("/warden/data", async (req, res) => {
     try {
-        // Get today's date without time
         const today = new Date();
-        today.setHours(0, 0, 0, 0); // Midnight start
+        today.setHours(0, 0, 0, 0);
         const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1); // Midnight end
-        const totalOutpass=await Outpass.find({});
-        // Query for today's outpasses and populate student details
-        const outpasses = await Outpass.find({
-            actualOutTime: { $gte: today, $lt: tomorrow }
-        }).populate("idNo"); // Linking student data
-
-        res.render("warden",{outpasses,totalOutpass});
+        tomorrow.setDate(today.getDate() + 1);
+        const students=await Student.find({});
+        const totalOutpass = await Outpass.find({});
+        const todayOutpasses = await Outpass.find({
+            expectedOutTime: { $gte: today, $lt: tomorrow }
+        }).populate("idNo");
+        console.log(todayOutpasses);
+        res.json({ totalOutpass, todayOutpasses,students });
     } catch (error) {
-        console.error("Error fetching total outpasses today:", error);
+        console.error("Error fetching outpasses:", error);
         res.status(500).json({ error: "Internal server error" });
     }
-
-    
 });
+
+app.get("/warden", async (req, res) => {
+
+        res.render("warden");
+})
 
 app.post("/warden", async (req, res) => {
     try {
@@ -58,24 +60,23 @@ app.post("/warden", async (req, res) => {
         console.log(idNo, name, dormNo, phoneNumber, branch, year, expectedInTime, expectedOutTime, goingPlace, causeOfOutpass);
 
         // Convert expectedInTime & expectedOutTime from string to Date
-        expectedInTime = expectedInTime ? new Date(expectedInTime) : null;
-        expectedOutTime = expectedOutTime ? new Date(expectedOutTime) : null;
+        expectedInTime = new Date();
+        expectedOutTime =new Date();
 
         // Validate required fields
         if (!idNo || !name || !dormNo || !phoneNumber || !goingPlace || !causeOfOutpass) {
             return res.status(400).json({ error: "Missing required fields. Please fill out all fields." });
         }
 
-        if (!expectedInTime || isNaN(expectedInTime.getTime()) || !expectedOutTime || isNaN(expectedOutTime.getTime())) {
-            return res.status(400).json({ error: "Invalid date format. Please select valid Date & Time." });
-        }
+        // if (!expectedInTime || isNaN(expectedInTime.getTime()) || !expectedOutTime || isNaN(expectedOutTime.getTime())) {
+        //     return res.status(400).json({ error: "Invalid date format. Please select valid Date & Time." });
+        // }
 
         // Check if Student Exists
         const student = await Student.findOne({ idNo });
         if (!student) {
             return res.status(404).json({ error: "Student not found" });
         }
-
         // Check if student has outpasses remaining
         if (student.outpassesRemaining <= 0) {
             return res.status(400).json({ error: "No outpasses remaining" });
@@ -98,9 +99,6 @@ app.post("/warden", async (req, res) => {
         await newOutpass.save();
 
         // Reduce outpasses remaining for the student
-        student.outpassesUsed += 1;
-        student.outpassesRemaining -= 1;
-        await student.save();
 
         res.status(201).json({ message: "Outpass request submitted successfully!" });
     } catch (error) {
@@ -108,6 +106,42 @@ app.post("/warden", async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+app.get("/security/data",async (req,res)=>{
+    const checkOut=await Outpass.find({actualOutTime:null});
+    const checkIn=await Outpass.find({actualOutTime:{$ne:null},actualInTime:null});
+    res.json({ checkIn,checkOut});
+})
+app.post("/security/Outpasses/:id/check-out",async (req,res)=>{
+    const {id}=req.params;
+    try {
+        const outpass = await Outpass.findById(id);
+        if (!outpass) return res.status(404).json({ error: "Outpass not found" });
 
+        outpass.actualOutTime = new Date(); // Set check-out time
+        await outpass.save();
+
+        res.json({ message: "Check-out successful!", outpass });
+    } catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+})
+app.post("/security/outpasses/:id/check-in", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const outpass = await Outpass.findById(id);
+        if (!outpass) return res.status(404).json({ error: "Outpass not found" });
+
+        outpass.actualInTime = new Date(); // Set check-in time
+        await outpass.save();
+
+        res.json({ message: "Check-in successful!", outpass });
+    } catch (error) {
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+app.get("/security",(req,res)=>{
+    res.render("security");
+})
 // Start Server
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

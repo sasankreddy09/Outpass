@@ -50,7 +50,7 @@ const studentNames = [
 // Generate 1,000 students
 const students = [];
 for (let i = 1; i <= 1000; i++) {
-    let idNo = `R21${String(i).padStart(3, "0")}`; // R210001 to R211000
+    let idNo = `R21${String(i).padStart(4, "0")}`; // R210001 to R211000
 
     let usedOutpasses = Math.floor(Math.random() * 5); // Random used outpasses (0 to 4)
     let remainingOutpasses = 10 - usedOutpasses; // Corrected calculation

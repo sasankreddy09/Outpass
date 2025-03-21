@@ -238,6 +238,19 @@
     </div>
 
     <script>
+        const outdata = async () => {
+    const response = await fetch("/security/data");
+    const data = await response.json();
+    return data;
+};
+let outing;
+// Wrap in an async function
+async function fetchData() {
+    outing = await outdata();
+    console.log(outing); // Logs the outpass data in the console
+}
+// Call the function
+fetchData();
         // Data Storage
         let securityData = JSON.parse(localStorage.getItem('securityData')) || [];
         let outpassData = JSON.parse(localStorage.getItem('outpassData')) || [];
@@ -250,7 +263,7 @@
             switch (page) {
                 case 'today-list':
                     const today = new Date().toISOString().split('T')[0];
-                    const todayList = securityData.filter(op => op.date === today && op.status === 'Pending');
+                    const todayList = outing.checkOut.filter(op => new Date(op.expectedOutTime).toISOString().split('T')[0] === today);
                     content = `
                         <h2>Today's List</h2>
                         <input type="text" class="search-bar" id="today-search" placeholder="Search by Student ID" oninput="filterTodayList()">
@@ -268,13 +281,15 @@
                             <tbody id="today-list-body">
                                 ${todayList.map(op => `
                                     <tr>
-                                        <td>${op.studentId}</td>
-                                        <td>${op.studentName}</td>
+                                        <td>${op.idNo}</td>
+                                        <td>${op.name}</td>
                                         <td>${op.branch}</td>
-                                        <td>${op.expectedCheckin}</td>
-                                        <td>${op.cause}</td>
+                                        <td>${new Date(op.expectedOutTime).toISOString().split('T')[0]}</td>
+                                        <td>${op.causeOfOutpass}</td>
                                         <td>
-                                            <button class="action-btn" onclick="checkOut('${op.studentId}')">Check Out</button>
+                                        <form action="/security/Outpasses/${op._id}/check-out" method="post">
+                                                <button class="action-btn">Check Out</button>
+                                        </form>
                                         </td>
                                     </tr>
                                 `).join('')}
@@ -283,7 +298,6 @@
                     `;
                     break;
                 case 'checkin-data':
-                    const checkinList = securityData.filter(op => op.status === 'Checked Out');
                     content = `
                         <h2>Check-in Data</h2>
                         <input type="text" class="search-bar" id="checkin-search" placeholder="Search by Student ID" oninput="filterCheckinData()">
@@ -299,15 +313,18 @@
                                 </tr>
                             </thead>
                             <tbody id="checkin-data-body">
-                                ${checkinList.map(op => `
+                                ${outing.checkIn.map(op => `
                                     <tr>
-                                        <td>${op.studentId}</td>
-                                        <td>${op.studentName}</td>
+                                        <td>${op.idNo}</td>
+                                        <td>${op.name}</td>
                                         <td>${op.branch}</td>
-                                        <td>${op.expectedCheckin}</td>
-                                        <td>${op.cause}</td>
+                                        <td>${new Date(op.expectedInTime).toISOString().split('T')[0]}</td>
+                                        <td>${op.causeOfOutpass}</td>
                                         <td>
-                                            <button class="action-btn" onclick="checkIn('${op.studentId}')">Check In</button>
+                                        <form action="/security/Outpasses/${op._id}/check-in" method="post">
+                                                <button class="action-btn">Check In</button>
+                                        </form>
+
                                         </td>
                                     </tr>
                                 `).join('')}
@@ -341,7 +358,6 @@
         function filterCheckinData() {
             const searchQuery = document.getElementById('checkin-search').value.toLowerCase();
             const rows = document.querySelectorAll('#checkin-data-body tr');
-
             rows.forEach(row => {
                 const studentId = row.cells[0].textContent.toLowerCase();
                 if (studentId.includes(searchQuery)) {
