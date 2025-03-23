@@ -8,7 +8,8 @@ const studentSchema = new mongoose.Schema({
     dormNo: { type: String, required: true },
     phoneNumber: { type: String, required: true },
     totalOutpassesAllowed: { type: Number, default: 10 },
-    outpassesUsed: { type: Number, default: 0 }
+    outpassesUsed: { type: Number, default: 0 },
+    outpassHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: "Outpass" }]
 });
 
 // ✅ Prevent model overwriting issue
