@@ -243,7 +243,7 @@
     <!-- Header -->
     <div class="header">
         <h1>RGUKT Outpass Management System</h1>
-        <button class="logout-btn" onclick="logout()">🚪 Logout</button> <!-- Added emoji -->
+        <form action="/logout" method="post"><button class="logout-btn"> 🚪 Logout</button></form>  <!-- Added emoji -->
     </div>
 
     <!-- Main Container -->
@@ -270,66 +270,76 @@
     <script>
         // Function to load pages dynamically
         function loadPage(page) {
-            const mainContent = document.getElementById('main-content');
-            let content = '';
+    const mainContent = document.getElementById('main-content');
+    let content = '';
 
-            switch (page) {
-                case 'add-warden':
-                    content = `
-                        <h2>Add Warden</h2>
-                        <div class="form-container">
-                            <input type="text" placeholder="Enter Warden Username" id="warden-username">
-                            <input type="password" placeholder="Enter Warden Password" id="warden-password">
-                            <button onclick="addUser('warden')">Add Warden</button>
-                        </div>
-                    `;
-                    break;
-                case 'remove-warden':
-                    content = `
-                        <h2>Remove Warden</h2>
-                        <div class="form-container">
-                            <input type="text" placeholder="Enter Warden Username" id="remove-warden-username">
-                            <button onclick="removeUser('warden')">Remove Warden</button>
-                        </div>
-                    `;
-                    break;
-                case 'add-security':
-                    content = `
-                        <h2>Add Security</h2>
-                        <div class="form-container">
-                            <input type="text" placeholder="Enter Security Username" id="security-username">
-                            <input type="password" placeholder="Enter Security Password" id="security-password">
-                            <button onclick="addUser('security')">Add Security</button>
-                        </div>
-                    `;
-                    break;
-                case 'remove-security':
-                    content = `
-                        <h2>Remove Security</h2>
-                        <div class="form-container">
-                            <input type="text" placeholder="Enter Security Username" id="remove-security-username">
-                            <button onclick="removeUser('security')">Remove Security</button>
-                        </div>
-                    `;
-                    break;
-                case 'admin-settings':
-                    content = `
-                        <h2>Admin Settings</h2>
-                        <div class="form-container">
-                            <input type="text" placeholder="Current Username" id="current-username">
-                            <input type="password" placeholder="Current Password" id="current-password">
-                            <input type="text" placeholder="New Username" id="new-username">
-                            <input type="password" placeholder="New Password" id="new-password">
-                            <button onclick="updateAdminSettings()">Update Settings</button>
-                        </div>
-                    `;
-                    break;
-                default:
-                    content = `<h2>Welcome to Admin Portal</h2><p>Select an option from the sidebar to manage the system.</p>`;
-            }
+    switch (page) {
+        case 'add-warden':
+            content = `
+                <h2>Add Warden</h2>
+                <div class="form-container">
+                    <form action="/wardens" method="post" onsubmit="return submitForm(event, 'warden')">
+                        <input type="text" placeholder="Enter Warden Username" id="warden-username" name="username">
+                        <input type="password" placeholder="Enter Warden Password" id="warden-password" name="password">
+                        <button type="submit">Add Warden</button>
+                    </form>
+                </div>
+            `;
+            break;
+        case 'remove-warden':
+            content = `
+                <h2>Remove Warden</h2>
+                <div class="form-container">
+                    <form action="/remove-warden" method="post" onsubmit="return removeUser(event, 'warden')">
+                        <input type="text" placeholder="Enter Warden Username" id="remove-warden-username" name="name">
+                        <button type="submit">Remove Warden</button>
+                    </form>
+                </div>
+            `;
+            break;
+        case 'add-security':
+            content = `
+                <h2>Add Security</h2>
+                <div class="form-container">
+                    <form action="/security" method="post" onsubmit="return submitForm(event, 'security')">
+                        <input type="text" placeholder="Enter Security Username" id="security-username" name="username">
+                        <input type="password" placeholder="Enter Security Password" id="security-password" name="password">
+                        <button type="submit">Add Security</button>
+                    </form>
+                </div>
+            `;
+            break;
+        case 'remove-security':
+            content = `
+                <h2>Remove Security</h2>
+                <div class="form-container">
+                    <form action="/remove-security" method="post"">
+                        <input type="text" placeholder="Enter Security Username" id="remove-security-username" name="name">
+                        <button type="submit">Remove Security</button>
+                    </form>
+                </div>
+            `;
+            break;
+        case 'admin-settings':
+            content = `
+                <h2>Admin Settings</h2>
+                <div class="form-container">
+                    <form action="/admin/update" method="post" onsubmit="return updateAdminSettings(event)">
+                        <input type="text" placeholder="currentUsername" id="current-username" name="currentUsername">
+                        <input type="password" placeholder="currentPassword" id="current-password" name="currentPassword">
+                        <input type="text" placeholder="newUsername" id="new-username" name="newUsername">
+                        <input type="password" placeholder="newPassword" id="new-password" name="newPassword">
+                        <button type="submit">Update Settings</button>
+                    </form>
+                </div>
+            `;
+            break;
+        default:
+            content = `<h2>Welcome to Admin Portal</h2><p>Select an option from the sidebar to manage the system.</p>`;
+    }
 
-            mainContent.innerHTML = content;
-        }
+    mainContent.innerHTML = content;
+}
 
         // Function to add a user
         function addUser(role) {

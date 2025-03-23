@@ -194,41 +194,13 @@
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h1>Outpass Management System</h1>
-        <form class="space-y-4" onsubmit="validateLogin(event)">
-            <!-- Custom Role Dropdown -->
-            <div class="custom-select-wrapper">
-                <select id="role" class="custom-select" required>
-                    <option value="" disabled selected>Select Role</option>
-                    <option value="warden">Warden</option>
-                    <option value="security">Security</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
-            <input type="text" id="username" placeholder="Username" class="custom-input" required>
-            <input type="password" id="password" placeholder="Password" class="custom-input" required>
-            <button type="submit" class="login-btn">Login</button>
-        </form>
-        <div id="error-message" class="error-message">Invalid username or password.</div>
-    </div>
-
-    <script>
-        function validateLogin(event) {
-            event.preventDefault();
-            const role = document.getElementById('role').value;
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const user = users.find(u => u.username === username && u.password === password && u.role === role);
-            if (user) {
-                window.location.href = user.role + '.html';
-            } else {
-                const errorMessage = document.getElementById('error-message');
-                errorMessage.style.display = 'block';
-                setTimeout(() => errorMessage.style.display = 'none', 3000);
-            }
-        }
-    </script>
+        <div class="login-container">
+            <h1>Outpass Management System</h1>
+            <form class="space-y-4" action="/login" method="POST">
+                <input type="text" name="username" placeholder="Username" class="custom-input" required>
+                <input type="password" name="password" placeholder="Password" class="custom-input" required>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+        </div>
 </body>
 </html>

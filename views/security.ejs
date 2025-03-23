@@ -216,7 +216,7 @@
     <!-- Header -->
     <div class="header">
         <h1>RGUKT Outpass Management System</h1>
-        <button class="logout-btn" onclick="logout()">Logout</button>
+        <form action="/logout" method="post"><button class="logout-btn">Logout</button></form>
     </div>
 
     <!-- Main Container -->
@@ -239,7 +239,13 @@
 
     <script>
         const outdata = async () => {
-    const response = await fetch("/security/data");
+    
+            const response = await fetch("/security/data", {
+            method: "GET",
+            credentials: "include",  // ✅ Sends cookies for authentication
+            headers: {
+                "Content-Type": "application/json"
+            }});
     const data = await response.json();
     return data;
 };
