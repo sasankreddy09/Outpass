@@ -1,19 +1,20 @@
-require("dotenv").config();
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const authRoutes = require("./routes/auth"); // Make sure this path is correct
+
+const express = require('express');
+const path = require('path');
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+const PORT = 3000;
 
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.error("MongoDB connection error:", err));
+// Set EJS as the templating engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-// ✅ Use Routes Correctly
-app.use("/api/auth", authRoutes);
+// Route to render login.ejs
+app.get('/login', (req, res) => {
+    res.render('login');
+});
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Start the server
+app.listen(PORT, () => {
+    console.log("Server is running on http://localhost:${PORT}");
+});
