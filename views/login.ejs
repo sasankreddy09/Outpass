@@ -198,14 +198,7 @@
         <h1>Outpass Management System</h1>
         <form class="space-y-4" onsubmit="validateLogin(event)">
             <!-- Custom Role Dropdown -->
-            <div class="custom-select-wrapper">
-                <select id="role" class="custom-select" required>
-                    <option value="" disabled selected>Select Role</option>
-                    <option value="warden">Warden</option>
-                    <option value="security">Security</option>
-                    <option value="admin">Admin</option>
-                </select>
-            </div>
+             
             <input type="text" id="username" placeholder="Username" class="custom-input" required>
             <input type="password" id="password" placeholder="Password" class="custom-input" required>
             <button type="submit" class="login-btn">Login</button>
