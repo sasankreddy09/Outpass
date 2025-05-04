@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Security Portal - Outpass Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <style>
         /* CSS Variables for Maintainability */
         :root {
@@ -50,6 +52,11 @@
             height: 100vh;
             overflow: hidden;
         }
+        i {
+    margin-right: 8px;
+    color: white;
+    text-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--secondary-color);
+}
 
         /* Header Styles */
         .header {
@@ -225,9 +232,9 @@
         <div class="sidebar">
             <h2>Dashboard</h2>
             <ul>
-                <li><a href="#" onclick="loadPage('today-list')">Today's List</a></li>
-                <li><a href="#" onclick="loadPage('checkin-data')">Check-in Data</a></li>
-            </ul>
+                <li><a href="#" onclick="loadPage('today-list')"><i class="fas fa-calendar-day"></i> Today's List</a></li>
+                <li><a href="#" onclick="loadPage('checkin-data')"><i class="fas fa-door-open"></i> Check-in Data</a></li>
+            </ul>            
         </div>
 
         <!-- Main Content -->

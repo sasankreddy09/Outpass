@@ -7,9 +7,9 @@ mongoose.connect("mongodb://localhost:27017/outpassDB", {
 });
 
 const users = [
-    { username: "Sasank", role: "Security" },
-    { username: "Kowshik", role: "Warden" },
-    { username: "Admin@699", role: "Admin" }
+    { username: "Security", role: "Security" },
+    { username: "Warden", role: "Warden" },
+    { username: "Admin", role: "Admin" }
 ];
 
 async function seedUsers() {

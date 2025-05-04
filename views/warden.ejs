@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Warden Portal - Outpass Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <style>
         /* CSS Variables for Maintainability */
         :root {
@@ -130,6 +132,10 @@
             font-size: 20px;
             text-align: center;
         }
+        .sidebar ul li a.active {
+    background: var(--primary-color);
+    font-weight: bold;
+}
 
         .sidebar ul {
             list-style: none;
@@ -150,6 +156,18 @@
             transition: all 0.3s ease;
             background: rgba(255, 255, 255, 0.1);
         }
+        .sidebar ul li a i {
+    margin-right: 10px;
+    color: var(--secondary-color);
+    width: 20px;
+    text-align: center;
+}
+.sidebar ul li a:hover i {
+    color: white;
+}
+.sidebar ul li a:hover i {
+    filter: drop-shadow(0 0 5px var(--secondary-color));
+}
 
         .sidebar ul li a:hover {
             background: var(--secondary-color);
@@ -167,7 +185,7 @@
             margin: 20px;
             box-shadow: var(--shadow);
         }
-
+        
         .main-content h2 {
             margin-top: 0;
             color: var(--text-color);
@@ -259,12 +277,13 @@
         <div class="sidebar">
             <h2>Dashboard</h2>
             <ul>
-                <li><a href="#" onclick="loadPage('outpass-request')">Outpass Request</a></li>
-                <li><a href="#" onclick="loadPage('today-status')">Today's Outpass Status</a></li>
-                <li><a href="#" onclick="loadPage('past-data')">Past Data</a></li>
-                <li><a href="#" onclick="loadPage('pending-students')">Pending Students</a></li>
-                <li><a href="#" onclick="loadPage('search')">Search</a></li>
+                <li><a href="#" onclick="loadPage('outpass-request')"><i class="fas fa-file-alt"></i> Outpass Request</a></li>
+                <li><a href="#" onclick="loadPage('today-status')"><i class="fas fa-calendar-day"></i> Today's Status</a></li>
+                <li><a href="#" onclick="loadPage('past-data')"><i class="fas fa-history"></i> Past Data</a></li>
+                <li><a href="#" onclick="loadPage('pending-students')"><i class="fas fa-user-clock"></i> Pending Students</a></li>
+                <li><a href="#" onclick="loadPage('search')"><i class="fas fa-search"></i> Search</a></li>
             </ul>
+            
         </div>
 
         <!-- Main Content -->
@@ -290,7 +309,7 @@ async function fetchData() {
 fetchData();
 
         // Data Storage
-
+0
         // Function to load pages dynamically
         function loadPage(page) {
             const mainContent = document.getElementById('main-content');
@@ -388,7 +407,11 @@ fetchData();
                     break;
                 case 'pending-students':
                     console.log(outing)
-                    const pendingStudents = outing.todayOutpasses.filter(op => new Date(op.expectedInTime) < new Date());
+                    const pendingStudents = outing.totalOutpass.filter(op => 
+  new Date(op.expectedInTime) < new Date() &&
+  (op.actualInTime === null || op.actualInTime === undefined)
+);
+
                     content = `
                         <h2>Pending Students</h2>
                         <table>
@@ -491,11 +514,10 @@ fetchData();
 
             document.getElementById('outpass-result').innerHTML = `<p style="color: green;">Outpass request submitted successfully. Remaining outpasses: ${student.outpassCount}</p>`;
         }
-
         // Function to load past data
         function loadPastData() {
             const date = document.getElementById('past-date').value;
-            const pastData = outing.todayOutpasses.filter(op => new Date(op.expectedOutTime).toISOString().split('T')[0] === date);
+            const pastData = outing.totalOutpass.filter(op => new Date(op.expectedOutTime).toISOString().split('T')[0] === date);
             console.log(pastData)
             const result = document.getElementById('past-data-result');
             result.innerHTML = `
@@ -556,6 +578,9 @@ fetchData();
             window.history.pushState(null, '', 'login.html');
         }
         console.log(warden);
+        document.querySelectorAll('.sidebar ul li a').forEach(link => link.classList.remove('active'));
+        event.target.classList.add('active');
+
     </script>
 </body>
 

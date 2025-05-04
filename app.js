@@ -102,7 +102,9 @@ const authorizeRole = (role) => {
         console.error("MongoDB connection error:", err);
     }
 })();
-
+app.get("/",(req,res)=>{
+    res.render("Intro");
+})
 // Routes
 app.get("/warden/data", requireAuth, authorizeRole("Warden"), async (req, res) => {
     try {
@@ -129,9 +131,7 @@ app.get("/warden", requireAuth, authorizeRole("Warden"), (req, res) => {
 app.post("/warden", requireAuth, authorizeRole("Warden"), async (req, res) => {
     try {
         let { idNo, name, dormNo, phoneNumber, branch, year, expectedInTime, expectedOutTime, goingPlace, causeOfOutpass } = req.body;
-
-        expectedInTime = new Date();
-        expectedOutTime = new Date();
+        console.log(idNo, name, dormNo, phoneNumber, branch, year, expectedInTime, expectedOutTime, goingPlace, causeOfOutpass )
 
         if (!idNo || !name || !dormNo || !phoneNumber || !goingPlace || !causeOfOutpass) {
             return res.status(400).json({ error: "Missing required fields." });

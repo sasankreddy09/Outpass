@@ -6,6 +6,7 @@
     <title>Admin Portal - Outpass Management System</title>
     <!-- Import Poppins Font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
         /* CSS Variables for Maintainability */
         :root {
@@ -131,6 +132,9 @@
             position: relative;
             overflow: hidden;
         }
+        .sidebar ul li a i {
+            margin-right: 10px;
+        }
 
         .sidebar ul li a::before {
             content: '';
@@ -237,32 +241,58 @@
                 margin: 10px;
             }
         }
+        .logo {
+    height: 50px;
+    margin-right: 15px;
+    vertical-align: middle;
+        }
+        .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+}
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+
     </style>
 </head>
 <body>
     <!-- Header -->
     <div class="header">
-        <h1>RGUKT Outpass Management System</h1>
-        <form action="/logout" method="post"><button class="logout-btn"> 🚪 Logout</button></form>  <!-- Added emoji -->
+        <div class="header-left">
+            <img style="border-radius: 50%;" src="data:image/jpeg;base64,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" alt="RGUKT Logo" class="logo">
+            <h1>RGUKT Outpass Management System</h1>
+        </div>
+        <form id="logoutForm" action="/logout" method="POST" style="display: inline;">
+            <button type="submit" class="logout">
+                <i class="fas fa-right-from-bracket"></i> Logout
+            </button>
+        </form>
+        
     </div>
-
     <!-- Main Container -->
     <div class="main-container">
         <!-- Sidebar -->
         <div class="sidebar">
-            <h2>Dashboard</h2>
+            <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
             <ul>
-                <li><a href="#" onclick="loadPage('add-warden')">Add Warden</a></li>
-                <li><a href="#" onclick="loadPage('remove-warden')">Remove Warden</a></li>
-                <li><a href="#" onclick="loadPage('add-security')">Add Security</a></li>
-                <li><a href="#" onclick="loadPage('remove-security')">Remove Security</a></li>
-                <li><a href="#" onclick="loadPage('admin-settings')">Admin Settings</a></li>
-            </ul>
+                <li><a href="#" onclick="loadPage('add-warden')"><i class="fas fa-user-plus"></i> Add Warden</a></li>
+                <li><a href="#" onclick="loadPage('remove-warden')"><i class="fas fa-user-minus"></i> Remove Warden</a></li>
+                <li><a href="#" onclick="loadPage('add-security')"><i class="fas fa-shield-alt"></i> Add Security</a></li>
+                <li><a href="#" onclick="loadPage('remove-security')"><i class="fas fa-user-shield"></i> Remove Security</a></li>
+                <li><a href="#" onclick="loadPage('admin-settings')"><i class="fas fa-cogs"></i> Admin Settings</a></li>
+            </ul>            
         </div>
 
         <!-- Main Content -->
         <div class="main-content" id="main-content">
-            <h2>Welcome to Admin Portal</h2>
+            <h2><i class="fas fa-home"></i> Welcome to Admin Portal</h2>
             <p>Select an option from the sidebar to manage the system.</p>
         </div>
     </div>
