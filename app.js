@@ -159,6 +159,7 @@ app.post("/warden", requireAuth, authorizeRole("Warden"), async (req, res) => {
 
 app.get("/security/data", requireAuth, authorizeRole("Security"), async (req, res) => {
     const checkOut = await Outpass.find({ actualOutTime: null });
+    console.log(checkOut)
     const checkIn = await Outpass.find({ actualOutTime: { $ne: null }, actualInTime: null });
     res.json({ checkIn, checkOut });
 });

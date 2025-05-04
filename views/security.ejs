@@ -232,7 +232,7 @@
         <div class="sidebar">
             <h2>Dashboard</h2>
             <ul>
-                <li><a href="#" onclick="loadPage('today-list')"><i class="fas fa-calendar-day"></i> Today's List</a></li>
+                <li><a href="#" onclick="loadPage('today-list')"><i class="fas fa-calendar-day"></i> Check-out List</a></li>
                 <li><a href="#" onclick="loadPage('checkin-data')"><i class="fas fa-door-open"></i> Check-in Data</a></li>
             </ul>            
         </div>
@@ -276,7 +276,7 @@ fetchData();
             switch (page) {
                 case 'today-list':
                     const today = new Date().toISOString().split('T')[0];
-                    const todayList = outing.checkOut.filter(op => new Date(op.expectedOutTime).toISOString().split('T')[0] === today);
+                    const todayList = outing.checkOut.filter(op => op.actualOutTime === null);
                     content = `
                         <h2>Today's List</h2>
                         <input type="text" class="search-bar" id="today-search" placeholder="Search by Student ID" oninput="filterTodayList()">
