@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outpass Management System - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Background Animation */
+        @keyframes moveBackground {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+
+        /* Glowing Animation */
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px #6a11cb, 0 0 10px #6a11cb; }
+            50% { box-shadow: 0 0 20px #6a11cb, 0 0 40px #6a11cb; }
+            100% { box-shadow: 0 0 5px #6a11cb, 0 0 10px #6a11cb; }
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* Custom Styles */
+        body {
+            background: linear-gradient(135deg, #20002c, #6f00ff);
+            background-size: 200% 200%;
+            animation: moveBackground 10s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            animation: float 4s ease-in-out infinite;
+            width: 400px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 10%, transparent 10.01%);
+            background-size: 20px 20px;
+            animation: moveBackground 10s linear infinite;
+            z-index: -1;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .custom-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.75rem;
+            width: 100%;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .custom-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .custom-input:hover, .custom-input:focus {
+            border-color: #6a11cb;
+            box-shadow: 0 0 10px #6a11cb;
+            animation: glow 1.5s infinite;
+        }
+
+        .custom-select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.75rem;
+            width: 100%;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            appearance: none;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .custom-select:hover {
+            border-color: #6a11cb;
+            box-shadow: 0 0 10px #6a11cb;
+            animation: glow 1.5s infinite;
+        }
+
+        .custom-select:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 15px #6a11cb;
+        }
+
+        .custom-select-wrapper {
+            position: relative;
+        }
+
+        .custom-select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            color: white;
+            pointer-events: none;
+        }
+
+        /* Style for dropdown options */
+        .custom-select option {
+            background: #2c3e50; /* Dark background for options */
+            color: white; /* Light text for options */
+        }
+
+        .login-btn {
+            background: linear-gradient(45deg, #6a11cb, #2575fc);
+            color: white;
+            padding: 0.75rem;
+            width: 100%;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300%;
+            height: 300%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 10%, transparent 10.01%);
+            transform: translate(-50%, -50%) rotate(45deg);
+            transition: all 0.5s ease;
+            z-index: 0;
+        }
+
+        .login-btn:hover::before {
+            transform: translate(-50%, -50%) rotate(135deg);
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(45deg, #2575fc, #6a11cb);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #6a11cb;
+        }
+
+        .login-btn:active {
+            transform: scale(0.95);
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 1rem;
+            display: none;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+        }
+    </style>
+</head>
+<body>
+        <div class="login-container">
+            <h1>Outpass Management System</h1>
+            <form class="space-y-4" action="/login" method="POST">
+                <input type="text" name="username" placeholder="Username" class="custom-input" required>
+                <input type="password" name="password" placeholder="Password" class="custom-input" required>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+        </div>
+</body>
+</html>

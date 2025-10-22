@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Portal - Outpass Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        /* CSS Variables for Maintainability */
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --background-gradient: linear-gradient(135deg, #20002c, #6f00ff);
+            --glass-background: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: white;
+            --shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            --glow-animation: glow 1.5s infinite alternate;
+        }
+
+        /* Background Animation */
+        @keyframes moveBackground {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+
+        /* Glowing Animation */
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color); }
+            50% { box-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--primary-color); }
+            100% { box-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color); }
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* Base Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: var(--background-gradient);
+            background-size: 200% 200%;
+            animation: moveBackground 10s ease infinite;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        i {
+    margin-right: 8px;
+    color: white;
+    text-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--secondary-color);
+}
+
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            animation: var(--glow-animation);
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Arial', sans-serif;
+            font-weight: 500;
+            animation: var(--glow-animation);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: rgba(44, 62, 80, 0.8);
+            color: var(--text-color);
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 16px;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar ul li a:hover {
+            background: var(--secondary-color);
+            transform: scale(1.05);
+            box-shadow: var(--glow-animation);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background: var(--glass-background);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .main-content h2 {
+            margin-top: 0;
+            color: var(--text-color);
+        }
+
+        /* Search Bar Styles */
+        .search-bar {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--glass-border);
+            border-radius: 5px;
+            background: var(--glass-background);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .search-bar::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-bar:hover, .search-bar:focus {
+            border-color: var(--primary-color);
+            box-shadow: var(--glow-animation);
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background: var(--primary-color);
+            color: var(--text-color);
+        }
+
+        table tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Button Styles */
+        .action-btn {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-color);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+            transform: scale(1.05);
+            box-shadow: var(--glow-animation);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>RGUKT Outpass Management System</h1>
+        <form action="/logout" method="post"><button class="logout-btn">Logout</button></form>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Dashboard</h2>
+            <ul>
+                <li><a href="#" onclick="loadPage('today-list')"><i class="fas fa-calendar-day"></i> Check-out List</a></li>
+                <li><a href="#" onclick="loadPage('checkin-data')"><i class="fas fa-door-open"></i> Check-in Data</a></li>
+            </ul>            
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <h2>Welcome to Security Portal</h2>
+            <p>Select an option from the sidebar to manage outpasses.</p>
+        </div>
+    </div>
+
+    <script>
+        const outdata = async () => {
+    
+            const response = await fetch("/security/data", {
+            method: "GET",
+            credentials: "include",  // ✅ Sends cookies for authentication
+            headers: {
+                "Content-Type": "application/json"
+            }});
+    const data = await response.json();
+    return data;
+};
+let outing;
+// Wrap in an async function
+async function fetchData() {
+    outing = await outdata();
+    console.log(outing); // Logs the outpass data in the console
+}
+// Call the function
+fetchData();
+        // Data Storage
+        let securityData = JSON.parse(localStorage.getItem('securityData')) || [];
+        let outpassData = JSON.parse(localStorage.getItem('outpassData')) || [];
+
+        // Function to load pages dynamically
+        function loadPage(page) {
+            const mainContent = document.getElementById('main-content');
+            let content = '';
+
+            switch (page) {
+                case 'today-list':
+                    const today = new Date().toISOString().split('T')[0];
+                    const todayList = outing.checkOut.filter(op => op.actualOutTime === null);
+                    content = `
+                        <h2>Today's List</h2>
+                        <input type="text" class="search-bar" id="today-search" placeholder="Search by Student ID" oninput="filterTodayList()">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <th>Name</th>
+                                    <th>Branch</th>
+                                    <th>Expected Check-in</th>
+                                    <th>Cause</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="today-list-body">
+                                ${todayList.map(op => `
+                                    <tr>
+                                        <td>${op.idNo}</td>
+                                        <td>${op.name}</td>
+                                        <td>${op.branch}</td>
+                                        <td>${new Date(op.expectedOutTime).toISOString().split('T')[0]}</td>
+                                        <td>${op.causeOfOutpass}</td>
+                                        <td>
+                                        <form action="/security/Outpasses/${op._id}/check-out" method="post">
+                                                <button class="action-btn">Check Out</button>
+                                        </form>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    break;
+                case 'checkin-data':
+                    content = `
+                        <h2>Check-in Data</h2>
+                        <input type="text" class="search-bar" id="checkin-search" placeholder="Search by Student ID" oninput="filterCheckinData()">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <th>Name</th>
+                                    <th>Branch</th>
+                                    <th>Expected Check-in</th>
+                                    <th>Cause</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="checkin-data-body">
+                                ${outing.checkIn.map(op => `
+                                    <tr>
+                                        <td>${op.idNo}</td>
+                                        <td>${op.name}</td>
+                                        <td>${op.branch}</td>
+                                        <td>${new Date(op.expectedInTime).toISOString().split('T')[0]}</td>
+                                        <td>${op.causeOfOutpass}</td>
+                                        <td>
+                                        <form action="/security/Outpasses/${op._id}/check-in" method="post">
+                                                <button class="action-btn">Check In</button>
+                                        </form>
+
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    break;
+                default:
+                    content = `<h2>Welcome to Security Portal</h2><p>Select an option from the sidebar to manage outpasses.</p>`;
+            }
+
+            mainContent.innerHTML = content;
+        }
+
+        // Function to filter Today's List
+        function filterTodayList() {
+            const searchQuery = document.getElementById('today-search').value.toLowerCase();
+            const rows = document.querySelectorAll('#today-list-body tr');
+
+            rows.forEach(row => {
+                const studentId = row.cells[0].textContent.toLowerCase();
+                if (studentId.includes(searchQuery)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Function to filter Check-in Data
+        function filterCheckinData() {
+            const searchQuery = document.getElementById('checkin-search').value.toLowerCase();
+            const rows = document.querySelectorAll('#checkin-data-body tr');
+            rows.forEach(row => {
+                const studentId = row.cells[0].textContent.toLowerCase();
+                if (studentId.includes(searchQuery)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Function to handle Check Out
+        function checkOut(studentId) {
+            const outpass = securityData.find(op => op.studentId === studentId && op.status === 'Pending');
+            if (outpass) {
+                outpass.status = 'Checked Out';
+                localStorage.setItem('securityData', JSON.stringify(securityData));
+
+                // Update Warden Portal's Today's Outpass Status
+                const wardenOutpass = outpassData.find(op => op.studentId === studentId && op.date === new Date().toISOString().split('T')[0]);
+                if (wardenOutpass) {
+                    wardenOutpass.status = 'Checked Out';
+                    localStorage.setItem('outpassData', JSON.stringify(outpassData));
+                }
+
+                alert(`Student ${studentId} has been checked out.`);
+                loadPage('today-list');
+            }
+        }
+
+        // Function to handle Check In
+        function checkIn(studentId) {
+            const outpass = securityData.find(op => op.studentId === studentId && op.status === 'Checked Out');
+            if (outpass) {
+                outpass.status = 'Checked In';
+                localStorage.setItem('securityData', JSON.stringify(securityData));
+
+                // Show student details
+                alert(`Student ${studentId} has been checked in.\n\nDetails:\nName: ${outpass.studentName}\nBranch: ${outpass.branch}\nExpected Check-in: ${outpass.expectedCheckin}\nCause: ${outpass.cause}`);
+                loadPage('checkin-data');
+            }
+        }
+
+        // Logout Functionality
+        function logout() {
+            // Prevent back button navigation
+            window.location.replace('login.html');
+            window.history.pushState(null, '', 'login.html');
+        }
+        console.log("security");
+    </script>
+</body>
+</html>
